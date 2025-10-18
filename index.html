@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coapé App</title>
+    <title>Coapé App v2.0</title>
     <style>
         * {
             margin: 0;
@@ -42,7 +42,7 @@
             margin-bottom: 20px;
         }
         
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 18px;
             font-size: 18px;
@@ -95,6 +95,11 @@
         .btn-admin {
             background: linear-gradient(135deg, #6a4c93 0%, #553c7d 100%);
             box-shadow: 0 3px 8px rgba(106, 76, 147, 0.3);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #fd7e14 0%, #e8590c 100%);
+            box-shadow: 0 3px 8px rgba(253, 126, 20, 0.3);
         }
         
         .saldo {
@@ -272,6 +277,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-item:hover {
+            transform: translateX(5px);
+            border-color: #d4a017;
         }
         
         .badge {
@@ -291,6 +303,11 @@
             color: #c92a2a;
         }
         
+        .badge-admin {
+            background: #e5dbff;
+            color: #5f3dc4;
+        }
+        
         .info-box {
             background: #e7f5ff;
             border: 2px solid #4dabf7;
@@ -305,19 +322,89 @@
             padding: 20px;
             color: #d4a017;
         }
+        
+        .stock-item {
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stock-bajo {
+            border-left: 6px solid #e03131;
+            background: #fff5f5;
+        }
+        
+        .stock-medio {
+            border-left: 6px solid #fcc419;
+            background: #fff9db;
+        }
+        
+        .stock-alto {
+            border-left: 6px solid #2b8a3e;
+            background: #ebfbee;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+        }
+        
+        .tab.active {
+            border-bottom-color: #d4a017;
+            color: #d4a017;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .calendario-cura {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 6px solid #d4a017;
+        }
+        
+        .cura-pendiente {
+            border-left-color: #e67700;
+            background: #fff3bf;
+        }
+        
+        .cura-completada {
+            border-left-color: #2b8a3e;
+            background: #d3f9d8;
+        }
     </style>
 </head>
 <body>
     <!-- PANTALLA LOGIN -->
     <div id="loginScreen" class="screen active">
         <div class="container">
-            <div class="logo">🍯 COAPÉ APP</div>
+            <div class="logo">🍯 COAPÉ APP v2.0</div>
             <div class="input-group">
                 <input type="number" id="numeroSocio" placeholder="Número de Socio" maxlength="4">
                 <input type="password" id="pinSocio" placeholder="PIN" maxlength="4">
             </div>
             <button class="btn" onclick="login()">ENTRAR</button>
-            <button class="btn btn-admin" onclick="accesoAdmin()">ACCESO ADMINISTRADOR</button>
+            <button class="btn btn-admin" onclick="loginAdmin()">ACCESO ADMINISTRADOR</button>
             <div style="text-align: center; margin-top: 20px;">
                 <a href="#" onclick="mostrarScreen('recuperarScreen')" style="color: #d4a017; text-decoration: none;">¿Olvidaste tu PIN?</a>
             </div>
@@ -337,22 +424,36 @@
         </div>
     </div>
 
-    <!-- PANTALLA MENÚ PRINCIPAL -->
+    <!-- PANTALLA MENÚ PRINCIPAL SOCIO -->
     <div id="mainScreen" class="screen">
         <div class="container">
             <div class="logo" id="nombreUsuario">🍯 HOLA, USUARIO</div>
             <button class="btn" onclick="cargarCuentaScreen()">💳 ESTADO DE CUENTA</button>
             <button class="btn" onclick="cargarColmenasScreen()">🐝 MIS COLMENAS</button>
-            <button class="btn" onclick="mostrarScreen('curasScreen')">📅 REGISTRAR CURAS</button>
+            <button class="btn" onclick="mostrarScreen('curasScreen')">📅 CALENDARIO DE CURAS</button>
+            <button class="btn" onclick="mostrarScreen('produccionScreen')">📊 REGISTRO DE PRODUCCIÓN</button>
             <button class="btn btn-danger" onclick="logout()">🚪 CERRAR SESIÓN</button>
         </div>
     </div>
 
-    <!-- PANTALLA ESTADO DE CUENTA CON PAGOS -->
+    <!-- PANTALLA MENÚ PRINCIPAL ADMIN -->
+    <div id="mainAdminScreen" class="screen">
+        <div class="container">
+            <div class="logo">👑 PANEL ADMINISTRATIVO</div>
+            <button class="btn btn-admin" onclick="cargarDashboardAdmin()">📊 DASHBOARD GENERAL</button>
+            <button class="btn" onclick="mostrarScreen('gestionSociosScreen')">👥 GESTIÓN DE SOCIOS</button>
+            <button class="btn" onclick="mostrarScreen('stockScreen')">📦 STOCK COOPERATIVA</button>
+            <button class="btn" onclick="mostrarScreen('informesScreen')">📈 INFORMES Y REPORTES</button>
+            <button class="btn btn-secondary" onclick="mostrarScreen('configuracionScreen')">⚙️ CONFIGURACIÓN</button>
+            <button class="btn btn-danger" onclick="logout()">🚪 CERRAR SESIÓN</button>
+        </div>
+    </div>
+
+    <!-- PANTALLA ESTADO DE CUENTA -->
     <div id="cuentaScreen" class="screen">
         <div class="container">
             <div class="header">
-                <button class="back-btn" onclick="mostrarScreen('mainScreen')">←</button>
+                <button class="back-btn" onclick="volverMenuPrincipal()">←</button>
                 <div style="font-weight: bold; color: #d4a017;">ESTADO DE CUENTA</div>
                 <div style="width: 20px;"></div>
             </div>
@@ -407,7 +508,7 @@
     <div id="colmenasScreen" class="screen">
         <div class="container">
             <div class="header">
-                <button class="back-btn" onclick="mostrarScreen('mainScreen')">←</button>
+                <button class="back-btn" onclick="volverMenuPrincipal()">←</button>
                 <div style="font-weight: bold; color: #d4a017;">MIS COLMENAS</div>
                 <div style="width: 20px;"></div>
             </div>
@@ -432,6 +533,8 @@
                 <option value="En desarrollo">En desarrollo</option>
                 <option value="Inactiva">Inactiva</option>
             </select>
+            <input type="text" id="ubicacionColmena" placeholder="Ubicación (opcional)">
+            <textarea id="observacionesColmena" placeholder="Observaciones (opcional)" rows="3"></textarea>
             <button class="btn" onclick="agregarColmena()">💾 GUARDAR COLMENA</button>
         </div>
     </div>
@@ -440,17 +543,95 @@
     <div id="curasScreen" class="screen">
         <div class="container">
             <div class="header">
-                <button class="back-btn" onclick="mostrarScreen('mainScreen')">←</button>
-                <div style="font-weight: bold; color: #d4a017;">REGISTRAR CURAS</div>
+                <button class="back-btn" onclick="volverMenuPrincipal()">←</button>
+                <div style="font-weight: bold; color: #d4a017;">CALENDARIO DE CURAS</div>
                 <div style="width: 20px;"></div>
             </div>
+            
             <div class="info-box">
-                <h3 style="color: #1971c2; margin-bottom: 8px;">Próxima cura recomendada</h3>
-                <p style="font-size: 20px; color: #d4a017; font-weight: bold;">15/04/2024</p>
+                <h3 style="color: #1971c2; margin-bottom: 8px;">📅 Calendario Anual Recomendado</h3>
+                <p style="font-size: 16px; color: #495057;">3 curas anuales para mantener la salud de las abejas</p>
             </div>
-            <button class="btn" onclick="registrarCura('aplicada')">✅ SI APLIQUÉ</button>
-            <button class="btn btn-secondary" onclick="registrarCura('no-aplicada')">⏰ NO APLIQUÉ</button>
-            <button class="btn btn-danger" onclick="registrarCura('programar')">📅 PROGRAMAR</button>
+
+            <div id="listaCuras">
+                <div class="calendario-cura">
+                    <h4>🍃 Cura de Primavera</h4>
+                    <p><strong>Fecha recomendada:</strong> 15 de Septiembre</p>
+                    <p><strong>Estado:</strong> <span style="color: #2b8a3e;">✅ Completada</span></p>
+                </div>
+                
+                <div class="calendario-cura cura-pendiente">
+                    <h4>☀️ Cura de Verano</h4>
+                    <p><strong>Fecha recomendada:</strong> 15 de Diciembre</p>
+                    <p><strong>Estado:</strong> <span style="color: #e67700;">⏰ Pendiente</span></p>
+                    <button class="btn" style="margin-top: 10px; padding: 15px;" onclick="registrarCura('verano')">
+                        ✅ REGISTRAR APLICACIÓN
+                    </button>
+                </div>
+                
+                <div class="calendario-cura">
+                    <h4>🍂 Cura de Otoño</h4>
+                    <p><strong>Fecha recomendada:</strong> 15 de Marzo</p>
+                    <p><strong>Estado:</strong> <span style="color: #495057;">📅 Próxima</span></p>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 12px;">
+                <h4 style="color: #495057; margin-bottom: 10px;">📝 Historial de Curas</h4>
+                <div id="historialCuras">
+                    <div class="loading">Cargando historial...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA PRODUCCIÓN -->
+    <div id="produccionScreen" class="screen">
+        <div class="container">
+            <div class="header">
+                <button class="back-btn" onclick="volverMenuPrincipal()">←</button>
+                <div style="font-weight: bold; color: #d4a017;">REGISTRO DE PRODUCCIÓN</div>
+                <div style="width: 20px;"></div>
+            </div>
+            
+            <div class="info-box">
+                <h3 style="color: #1971c2; margin-bottom: 8px;">📊 Mi Producción Anual</h3>
+                <p style="font-size: 20px; color: #d4a017; font-weight: bold;" id="produccionAnual">Total 2024: 0 kg</p>
+            </div>
+
+            <button class="btn btn-secondary" onclick="mostrarScreen('nuevaProduccionScreen')">
+                ➕ REGISTRAR COSECHA
+            </button>
+
+            <h4 style="margin: 25px 0 15px 0; color: #495057;">Historial de Cosechas</h4>
+            <div id="historialProduccion">
+                <div class="loading">Cargando historial...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA NUEVA PRODUCCIÓN -->
+    <div id="nuevaProduccionScreen" class="screen">
+        <div class="container">
+            <div class="header">
+                <button class="back-btn" onclick="mostrarScreen('produccionScreen')">←</button>
+                <div style="font-weight: bold; color: #d4a017;">REGISTRAR COSECHA</div>
+                <div style="width: 20px;"></div>
+            </div>
+            
+            <input type="date" id="fechaCosecha" value="">
+            <input type="number" id="cantidadCosecha" placeholder="Cantidad en kg">
+            <select id="tipoMiel" style="width: 100%; padding: 18px; font-size: 18px; margin-bottom: 20px; border-radius: 12px; border: 2px solid #e9d8a6;">
+                <option value="">Tipo de miel</option>
+                <option value="Multifloral">Multifloral</option>
+                <option value="Monofloral">Monofloral</option>
+                <option value="Orgánica">Orgánica</option>
+            </select>
+            <textarea id="observacionesCosecha" placeholder="Observaciones (flora, clima, etc.)" rows="3"></textarea>
+            
+            <button class="btn" onclick="registrarCosecha()">
+                💾 GUARDAR COSECHA
+            </button>
         </div>
     </div>
 
@@ -458,8 +639,8 @@
     <div id="adminScreen" class="screen">
         <div class="container">
             <div class="header">
-                <button class="back-btn" onclick="logout()">←</button>
-                <div style="font-weight: bold; color: #6a4c93;">DASHBOARD ADMINISTRADOR</div>
+                <button class="back-btn" onclick="volverMenuPrincipal()">←</button>
+                <div style="font-weight: bold; color: #6a4c93;">DASHBOARD ADMINISTRATIVO</div>
                 <div style="width: 20px;"></div>
             </div>
             
@@ -477,8 +658,8 @@
                     <div class="stat-number" id="totalColmenas">0</div>
                 </div>
                 <div class="stat-card">
-                    <div>Colmenas Activas</div>
-                    <div class="stat-number" id="colmenasActivas">0</div>
+                    <div>Producción Total</div>
+                    <div class="stat-number" id="produccionTotal">0 kg</div>
                 </div>
             </div>
 
@@ -489,453 +670,153 @@
         </div>
     </div>
 
+    <!-- PANTALLA GESTIÓN DE SOCIOS -->
+    <div id="gestionSociosScreen" class="screen">
+        <div class="container">
+            <div class="header">
+                <button class="back-btn" onclick="volverMenuPrincipal()">←</button>
+                <div style="font-weight: bold; color: #6a4c93;">GESTIÓN DE SOCIOS</div>
+                <div style="width: 20px;"></div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="mostrarScreen('nuevoSocioScreen')">
+                👥 AGREGAR NUEVO SOCIO
+            </button>
+
+            <div id="listaGestionSocios" class="user-list">
+                <div class="loading">Cargando socios...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA NUEVO SOCIO -->
+    <div id="nuevoSocioScreen" class="screen">
+        <div class="container">
+            <div class="header">
+                <button class="back-btn" onclick="mostrarScreen('gestionSociosScreen')">←</button>
+                <div style="font-weight: bold; color: #6a4c93;">NUEVO SOCIO</div>
+                <div style="width: 20px;"></div>
+            </div>
+            
+            <input type="text" id="nombreSocio" placeholder="Nombre completo">
+            <input type="number" id="telefonoSocio" placeholder="Teléfono">
+            <input type="email" id="emailSocio" placeholder="Email">
+            <input type="number" id="numeroSocioNuevo" placeholder="Número de socio (4 dígitos)">
+            <input type="password" id="pinSocioNuevo" placeholder="PIN (4 dígitos)">
+            <select id="estadoSocio" style="width: 100%; padding: 18px; font-size: 18px; margin-bottom: 20px; border-radius: 12px; border: 2px solid #e9d8a6;">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+            </select>
+            
+            <button class="btn" onclick="agregarSocio()">
+                💾 GUARDAR SOCIO
+            </button>
+        </div>
+    </div>
+
+    <!-- PANTALLA STOCK -->
+    <div id="stockScreen" class="screen">
+        <div class="container">
+            <div class="header">
+                <button class="back-btn" onclick="volverMenuPrincipal()">←</button>
+                <div style="font-weight: bold; color: #6a4c93;">STOCK COOPERATIVA</div>
+                <div style="width: 20px;"></div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="cambiarTab('stock-miel')">🍯 Miel</div>
+                <div class="tab" onclick="cambiarTab('stock-insumos')">🛠️ Insumos</div>
+                <div class="tab" onclick="cambiarTab('stock-maquinaria')">⚙️ Maquinaria</div>
+            </div>
+
+            <div id="stock-miel" class="tab-content active">
+                <h4 style="margin: 20px 0 15px 0; color: #495057;">Stock de Miel</h4>
+                <div id="listaStockMiel">
+                    <div class="loading">Cargando stock...</div>
+                </div>
+            </div>
+
+            <div id="stock-insumos" class="tab-content">
+                <h4 style="margin: 20px 0 15px 0; color: #495057;">Insumos Apícolas</h4>
+                <div id="listaStockInsumos">
+                    <div class="loading">Cargando insumos...</div>
+                </div>
+            </div>
+
+            <div id="stock-maquinaria" class="tab-content">
+                <h4 style="margin: 20px 0 15px 0; color: #495057;">Maquinaria</div>
+                <div id="listaStockMaquinaria">
+                    <div class="loading">Cargando maquinaria...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA INFORMES -->
+    <div id="informesScreen" class="screen">
+        <div class="container">
+            <div class="header">
+                <button class="back-btn" onclick="volverMenuPrincipal()">←</button>
+                <div style="font-weight: bold; color: #6a4c93;">INFORMES Y REPORTES</div>
+                <div style="width: 20px;"></div>
+            </div>
+
+            <button class="btn" onclick="generarInforme('produccion')">
+                📊 Informe de Producción
+            </button>
+            <button class="btn" onclick="generarInforme('financiero')">
+                💰 Informe Financiero
+            </button>
+            <button class="btn" onclick="generarInforme('sanitario')">
+                🏥 Informe Sanitario
+            </button>
+            <button class="btn btn-secondary" onclick="generarInforme('completo')">
+                📈 Informe Completo
+            </button>
+
+            <div id="areaInforme" style="margin-top: 20px; display: none;">
+                <div class="info-box">
+                    <h4 id="tituloInforme">Informe Generado</h4>
+                    <div id="contenidoInforme">
+                        <!-- Aquí se muestra el informe -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA CONFIGURACIÓN -->
+    <div id="configuracionScreen" class="screen">
+        <div class="container">
+            <div class="header">
+                <button class="back-btn" onclick="volverMenuPrincipal()">←</button>
+                <div style="font-weight: bold; color: #6a4c93;">CONFIGURACIÓN</div>
+                <div style="width: 20px;"></div>
+            </div>
+
+            <div class="info-box">
+                <h4 style="color: #1971c2; margin-bottom: 10px;">⚙️ Configuración del Sistema</h4>
+                <p style="color: #495057;">Configura los parámetros de la cooperativa</p>
+            </div>
+
+            <input type="number" id="cuotaMensual" placeholder="Cuota societaria mensual" value="3260">
+            <input type="number" id="costoMaquinaria" placeholder="Costo maquinaria por kg" value="50">
+            <input type="number" id="precioMiel" placeholder="Precio de venta miel por kg" value="1200">
+            
+            <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 12px;">
+                <h4 style="color: #495057; margin-bottom: 10px;">📅 Fechas de Cura</h4>
+                <input type="date" id="fechaCura1" placeholder="Primera cura" style="margin-bottom: 10px;">
+                <input type="date" id="fechaCura2" placeholder="Segunda cura" style="margin-bottom: 10px;">
+                <input type="date" id="fechaCura3" placeholder="Tercera cura">
+            </div>
+
+            <button class="btn" onclick="guardarConfiguracion()">
+                💾 GUARDAR CONFIGURACIÓN
+            </button>
+        </div>
+    </div>
+
     <script>
         // 🔗 CONFIGURACIÓN JSONBIN - BACKEND EN LA NUBE
         const JSONBIN_ID = '68f3f0f643b1c97be96fb7ae';
-        const JSONBIN_API_KEY = '$2a$10$Uwte524/p56MUpYn79uOsuzSVBP6VU8AqNKw8figIKdsE1PrtnCLi';
-        const API_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_ID}`;
-
-        let usuarioActual = null;
-        let datosApp = {
-            socios: [],
-            movimientos: [],
-            colmenas: [],
-            curas: []
-        };
-
-        // 📞 FUNCIÓN PARA CARGAR DATOS DESDE JSONBIN
-        async function cargarDatosApp() {
-            try {
-                const response = await fetch(API_URL, {
-                    headers: {
-                        'X-Master-Key': JSONBIN_API_KEY
-                    }
-                });
-                const result = await response.json();
-                datosApp = result.record;
-                return true;
-            } catch (error) {
-                console.error('Error cargando datos:', error);
-                return false;
-            }
-        }
-
-        // 📞 FUNCIÓN PARA GUARDAR DATOS EN JSONBIN
-        async function guardarDatosApp() {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY
-                    },
-                    body: JSON.stringify(datosApp)
-                });
-                return response.ok;
-            } catch (error) {
-                console.error('Error guardando datos:', error);
-                return false;
-            }
-        }
-
-        // 📞 FUNCIÓN PRINCIPAL PARA LLAMAR A LA API
-        async function callAPI(params) {
-            // Primero cargamos los datos actualizados
-            await cargarDatosApp();
-            
-            try {
-                console.log('Ejecutando acción:', params);
-                
-                if (params.action === 'login') {
-                    const socio = datosApp.socios.find(s => 
-                        s.numero === params.numero && s.pin === params.pin
-                    );
-                    return socio ? 
-                        { success: true, socio } : 
-                        { success: false, error: 'Credenciales incorrectas' };
-                }
-                
-                if (params.action === 'getMovimientos') {
-                    const movimientos = datosApp.movimientos.filter(m => 
-                        m.socioId === params.socioId
-                    );
-                    return { movimientos };
-                }
-                
-                if (params.action === 'getColmenas') {
-                    const colmenas = datosApp.colmenas.filter(c => 
-                        c.socioId === params.socioId
-                    );
-                    return { colmenas };
-                }
-                
-                if (params.action === 'addColmena') {
-                    const nuevaColmena = {
-                        id: Date.now(),
-                        socioId: params.socioId,
-                        colmenaId: 'COL' + (Math.floor(Math.random() * 900) + 100),
-                        nombre: params.nombre,
-                        fecha: new Date().toISOString().split('T')[0],
-                        estado: params.estado,
-                        ubicacion: ''
-                    };
-                    
-                    datosApp.colmenas.push(nuevaColmena);
-                    await guardarDatosApp();
-                    return { success: true, colmenaId: nuevaColmena.colmenaId };
-                }
-                
-                if (params.action === 'registrarCura') {
-                    const nuevaCura = {
-                        id: Date.now(),
-                        socioId: params.socioId,
-                        fecha: new Date().toISOString().split('T')[0],
-                        tipoCura: params.tipoCura,
-                        aplicada: params.aplicada,
-                        observaciones: params.observaciones
-                    };
-                    
-                    datosApp.curas.push(nuevaCura);
-                    await guardarDatosApp();
-                    return { success: true };
-                }
-                
-                if (params.action === 'getAdminData') {
-                    return {
-                        stats: {
-                            totalSocios: datosApp.socios.length,
-                            sociosActivos: datosApp.socios.filter(s => s.activo).length,
-                            totalColmenas: datosApp.colmenas.length,
-                            colmenasActivas: datosApp.colmenas.filter(c => c.estado === 'Activa').length
-                        }
-                    };
-                }
-                
-                return { success: true };
-                
-            } catch (error) {
-                console.error('Error en callAPI:', error);
-                return { success: false, error: 'Error de conexión' };
-            }
-        }
-
-        // 🗂️ FUNCIONES PRINCIPALES
-        async function login() {
-            const numero = document.getElementById('numeroSocio').value;
-            const pin = document.getElementById('pinSocio').value;
-            
-            if (!numero || !pin) {
-                alert('Por favor completa todos los campos');
-                return;
-            }
-
-            // Mostrar loading
-            const boton = event.target;
-            const textoOriginal = boton.textContent;
-            boton.textContent = '🔐 CONECTANDO...';
-            boton.disabled = true;
-
-            try {
-                const result = await callAPI({
-                    action: 'login',
-                    numero: numero,
-                    pin: pin
-                });
-                
-                if (result.success) {
-                    usuarioActual = result.socio;
-                    document.getElementById('nombreUsuario').textContent = `🍯 HOLA, ${usuarioActual.nombre.split(' ')[0]}`;
-                    mostrarScreen('mainScreen');
-                } else {
-                    alert(result.error || 'Credenciales incorrectas');
-                }
-            } catch (error) {
-                alert('Error de conexión: ' + error.message);
-            } finally {
-                // Restaurar botón
-                boton.textContent = textoOriginal;
-                boton.disabled = false;
-            }
-        }
-
-        async function cargarCuentaScreen() {
-            mostrarScreen('cuentaScreen');
-            await cargarDatosUsuario();
-        }
-
-        async function cargarColmenasScreen() {
-            mostrarScreen('colmenasScreen');
-            await cargarColmenasUsuario();
-        }
-
-        async function cargarDatosUsuario() {
-            if (!usuarioActual) return;
-
-            // Actualizar información de pago
-            document.getElementById('referenciaPago').textContent = `Socio ${usuarioActual.numero}`;
-            document.getElementById('infoCuota').textContent = `$3.260 - Vence: ${obtenerProximoVencimiento()}`;
-            
-            // Cargar movimientos desde la API
-            const result = await callAPI({
-                action: 'getMovimientos',
-                socioId: usuarioActual.numero
-            });
-
-            if (result.movimientos) {
-                let saldo = 0;
-                let htmlMovimientos = '';
-                
-                result.movimientos.forEach(mov => {
-                    saldo += parseFloat(mov.monto);
-                    const signo = mov.tipo === 'ingreso' ? '+' : '';
-                    const fechaFormateada = formatearFecha(mov.fecha);
-                    htmlMovimientos += `
-                        <div class="movimiento">
-                            <div>${fechaFormateada} - ${mov.concepto}</div>
-                            <div class="${mov.tipo}">${signo}$${Math.abs(mov.monto).toLocaleString()}</div>
-                        </div>
-                    `;
-                });
-                
-                document.getElementById('saldoDisplay').textContent = `$${saldo.toLocaleString()}`;
-                document.getElementById('saldoDisplay').className = `saldo ${saldo >= 0 ? 'positivo' : 'negativo'}`;
-                document.getElementById('listaMovimientos').innerHTML = htmlMovimientos || '<div class="movimiento">No hay movimientos</div>';
-                
-                // Mostrar/ocultar sección de pagos si hay deuda
-                const tieneDeuda = saldo < 0;
-                document.getElementById('seccionPagos').style.display = tieneDeuda ? 'block' : 'none';
-            }
-        }
-
-        async function cargarColmenasUsuario() {
-            if (!usuarioActual) return;
-
-            const result = await callAPI({
-                action: 'getColmenas',
-                socioId: usuarioActual.numero
-            });
-
-            if (result.colmenas) {
-                let htmlColmenas = '';
-                
-                result.colmenas.forEach(colmena => {
-                    const claseEstado = colmena.estado.toLowerCase().replace(' ', '-');
-                    const fechaFormateada = formatearFecha(colmena.fecha);
-                    htmlColmenas += `
-                        <div class="colmena-item ${claseEstado}">
-                            <div><strong>${colmena.nombre}</strong> (${colmena.colmenaId})</div>
-                            <div>Estado: ${colmena.estado}</div>
-                            <div>Desde: ${fechaFormateada}</div>
-                        </div>
-                    `;
-                });
-                
-                document.getElementById('listaColmenas').innerHTML = htmlColmenas || '<div class="colmena-item">No hay colmenas registradas</div>';
-            }
-        }
-
-        async function agregarColmena() {
-            const nombre = document.getElementById('nombreColmena').value;
-            const estado = document.getElementById('estadoColmena').value;
-            
-            if (!nombre) {
-                alert('Ingresa un nombre para la colmena');
-                return;
-            }
-
-            const result = await callAPI({
-                action: 'addColmena',
-                socioId: usuarioActual.numero,
-                nombre: nombre,
-                estado: estado
-            });
-
-            if (result.success) {
-                alert(`✅ Colmena "${nombre}" agregada como ${estado}\nID: ${result.colmenaId}`);
-                document.getElementById('nombreColmena').value = '';
-                mostrarScreen('colmenasScreen');
-                await cargarColmenasUsuario();
-            } else {
-                alert('Error al agregar colmena');
-            }
-        }
-
-        async function registrarCura(accion) {
-            const aplicada = accion === 'aplicada';
-            const observaciones = accion === 'aplicada' ? 'Aplicado correctamente' : 'Pendiente';
-            
-            const result = await callAPI({
-                action: 'registrarCura',
-                socioId: usuarioActual.numero,
-                tipoCura: 'Verano',
-                aplicada: aplicada,
-                observaciones: observaciones
-            });
-
-            if (result.success) {
-                const mensajes = {
-                    'aplicada': '✅ ¡Cura registrada como aplicada!\nFecha: ' + new Date().toLocaleDateString('es-ES'),
-                    'no-aplicada': '⏰ Cura registrada como no aplicada. Te recordaremos en 3 días.',
-                    'programar': '📅 Cura programada para nueva fecha'
-                };
-                alert(mensajes[accion]);
-                if (accion === 'programar') {
-                    const nuevaFecha = prompt('Ingresa nueva fecha (DD/MM/AAAA):');
-                    if (nuevaFecha) {
-                        alert(`✅ Cura programada para: ${nuevaFecha}`);
-                    }
-                }
-                mostrarScreen('mainScreen');
-            }
-        }
-
-        async function accesoAdmin() {
-            const numero = document.getElementById('numeroSocio').value;
-            const pin = document.getElementById('pinSocio').value;
-            
-            if (numero === "9999" && pin === "9999") {
-                usuarioActual = { nombre: "Administrador", numero: "9999" };
-                await cargarDashboardAdmin();
-                mostrarScreen('adminScreen');
-            } else {
-                alert('Credenciales de administrador incorrectas');
-            }
-        }
-
-        async function cargarDashboardAdmin() {
-            try {
-                const result = await callAPI({
-                    action: 'getAdminData'
-                });
-
-                if (result.stats) {
-                    document.getElementById('totalSocios').textContent = result.stats.totalSocios;
-                    document.getElementById('sociosActivos').textContent = result.stats.sociosActivos;
-                    document.getElementById('totalColmenas').textContent = result.stats.totalColmenas;
-                    document.getElementById('colmenasActivas').textContent = result.stats.colmenasActivas;
-                    
-                    // Obtener datos reales de socios para la lista
-                    await cargarDatosApp();
-                    
-                    let htmlSocios = '';
-                    
-                    datosApp.socios.forEach(socio => {
-                        // Calcular saldo del socio
-                        const movimientosSocio = datosApp.movimientos.filter(m => m.socioId === socio.numero);
-                        const saldoSocio = movimientosSocio.reduce((total, mov) => total + parseFloat(mov.monto), 0);
-                        
-                        // Contar colmenas del socio
-                        const colmenasSocio = datosApp.colmenas.filter(c => c.socioId === socio.numero);
-                        
-                        htmlSocios += `
-                            <div class="user-item">
-                                <div>
-                                    <strong>${socio.nombre}</strong><br>
-                                    <small>ID: ${socio.numero} | Tel: ${socio.telefono}</small><br>
-                                    <small>Colmenas: ${colmenasSocio.length} | Saldo: $${saldoSocio.toLocaleString()}</small>
-                                </div>
-                                <div class="badge ${socio.activo ? 'badge-activo' : 'badge-inactivo'}">
-                                    ${socio.activo ? 'ACTIVO' : 'INACTIVO'}
-                                </div>
-                            </div>
-                        `;
-                    });
-                    
-                    document.getElementById('listaSociosAdmin').innerHTML = htmlSocios;
-                }
-            } catch (error) {
-                console.error('Error cargando dashboard:', error);
-                document.getElementById('listaSociosAdmin').innerHTML = '<div class="loading">Error cargando datos</div>';
-            }
-        }
-
-        // 🔄 FUNCIONES AUXILIARES
-        function formatearFecha(fechaStr) {
-            try {
-                const fecha = new Date(fechaStr);
-                return fecha.toLocaleDateString('es-ES');
-            } catch (e) {
-                return fechaStr;
-            }
-        }
-
-        function obtenerProximoVencimiento() {
-            const hoy = new Date();
-            const proximo = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 10);
-            return formatearFecha(proximo);
-        }
-
-        function mostrarScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
-            });
-            document.getElementById(screenId).classList.add('active');
-        }
-
-        function logout() {
-            usuarioActual = null;
-            document.getElementById('numeroSocio').value = '';
-            document.getElementById('pinSocio').value = '';
-            mostrarScreen('loginScreen');
-        }
-
-        // 💰 FUNCIONES DE PAGO
-        function abrirMercadoPago() {
-            alert('🔗 Abriendo Mercado Pago...\n\nEn la versión final esto abrirá la app de Mercado Pago con el monto pre-cargado.');
-            
-            // Simulación de pago exitoso
-            setTimeout(() => {
-                const confirmar = confirm('¿Completaste el pago en Mercado Pago?');
-                if (confirmar) {
-                    alert('✅ Pago registrado exitosamente\nTu cuota ha sido marcada como pagada.');
-                    mostrarScreen('mainScreen');
-                }
-            }, 1000);
-        }
-
-        function copiarCVU() {
-            navigator.clipboard.writeText("0000003100000000000000");
-            alert('✅ CVU copiado al portapapeles\n\nPega este CVU en tu app de banco o Mercado Pago');
-        }
-
-        function copiarAlias() {
-            navigator.clipboard.writeText("coape.cuota");
-            alert('✅ Alias copiado al portapapeles\n\nPega este alias en tu app de banco');
-        }
-
-        function copiarMonto() {
-            navigator.clipboard.writeText("3260");
-            alert('✅ Monto copiado al portapapeles\n\nPega este monto en tu app de banco: $3.260');
-        }
-
-        function copiarReferencia() {
-            const referencia = `Socio ${usuarioActual ? usuarioActual.numero : '0001'}`;
-            navigator.clipboard.writeText(referencia);
-            alert('✅ Referencia copiada al portapapeles\n\nPega esta referencia en el concepto de la transferencia');
-        }
-
-        function marcarPagoEfectivo() {
-            const confirmar = confirm('¿Confirmas que pagaste en efectivo en la cooperativa?');
-            if (confirmar) {
-                alert('✅ Pago en efectivo registrado\nEl administrador verificará tu pago.');
-                mostrarScreen('mainScreen');
-            }
-        }
-
-        function recuperarPin() {
-            alert('📱 Función de recuperación de PIN - En desarrollo\n\nContacta al administrador: 3794-000000');
-            mostrarScreen('loginScreen');
-        }
-
-        // 🚀 INICIALIZACIÓN
-        document.getElementById('numeroSocio').focus();
-        
-        // Cargar datos al iniciar
-        cargarDatosApp().then(success => {
-            if (!success) {
-                console.log('Usando datos locales - JSONBin no disponible');
-            }
-        });
-    </script>
-</body>
-</html>
+        const JSONBIN_API_KEY = '$2a$10$Uwte524/p56MUpYn79uOsuz
